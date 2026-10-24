@@ -1,0 +1,52 @@
+PirateFinder catalogue JSON — NOTICE and attribution
+
+This project is unofficial and is not affiliated with PirateFinder or its
+authors. It converts the public PirateFinder catalogue into portable JSON.
+
+Source catalogue
+----------------
+PirateFinder
+  https://github.com/peteclarke-del/PirateFinder
+  Catalogue releases: https://github.com/peteclarke-del/PirateFinder/releases
+  Catalogue licence: Creative Commons Attribution-NonCommercial-ShareAlike 4.0
+  International (CC BY-NC-SA 4.0)
+  Copyright: Pete Clarke and the PirateFinder contributors.
+
+The PirateFinder catalogue includes data under the following source terms
+(recorded in its `sources` table and in the generated `sources` array):
+
+  Atari Legend                CC BY-NC-SA 4.0
+  TOSEC DAT pack              Freely distributed DAT files
+  Demozoo                     No licence stated (daily public dump)
+  libretro-thumbnails         No licence stated (images are game graphics)
+  Wikidata                    CC0 1.0
+  Wikipedia                   CC BY-SA 4.0
+  Internet Archive            archive.org terms of use
+  D-Bug, Steem, exxos, 8bitchip, crew lists, amigascne
+                              No licence stated; used under the site terms,
+                              credit given
+
+What this project includes
+--------------------------
+Only catalogue metadata: names, years, publishers, credits, contents, hashes,
+flags, download/media URLs, credits, facts and notes. It does not include disk
+images, screenshots or other binary media. Media entries contain addresses and
+credit lines only; the consumer fetches any picture from its source.
+
+Generated data
+--------------
+The generated JSON is an adaptation of the PirateFinder catalogue and is
+published under CC BY-NC-SA 4.0. Attribution and the share-alike obligation
+apply. It is non-commercial. See LICENSE-DATA.
+
+Changes made by this converter:
+  - extraction into a JSON schema (disks, contents, images, media, trivia,
+    links, crews, series, sources);
+  - compact media address reconstruction (prefix + rest) and credit expansion;
+  - optional platform filter (all, atari-st, amiga);
+  - no raw SQLite database is published.
+
+No game archive data
+--------------------
+This project contains no data from, and makes no reference to, any game
+archive or launcher. It is a generic PirateFinder catalogue converter.

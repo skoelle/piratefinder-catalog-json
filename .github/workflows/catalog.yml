@@ -1,0 +1,65 @@
+name: Build catalogue JSON
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Catalogue tag (empty = newest)"
+        required: false
+        type: string
+      platforms:
+        description: "Comma-separated platforms"
+        required: false
+        default: "all,atari-st,amiga"
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: catalog-json
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Test
+        run: python -m unittest discover -s tests -v
+
+      - name: Build JSON assets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CATALOGUE_TAG: ${{ github.event.inputs.tag }}
+          PLATFORMS: ${{ github.event.inputs.platforms || 'all,atari-st,amiga' }}
+        run: |
+          set -euo pipefail
+          args=()
+          if [ -n "${CATALOGUE_TAG:-}" ]; then
+            args+=(--tag "$CATALOGUE_TAG")
+          fi
+          python -m converter update --platforms "$PLATFORMS" "${args[@]}"
+
+      - name: Publish catalogue-latest assets
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          tag="catalog-latest"
+          if ! gh release view "$tag" >/dev/null 2>&1; then
+            gh release create "$tag" \
+              --prerelease \
+              --title "Catalogue JSON (latest)" \
+              --notes "Automatically generated from the newest PirateFinder catalogue release. Data: CC BY-NC-SA 4.0 (see LICENSE-DATA and NOTICE)."
+          fi
+          gh release upload "$tag" dist/* --clobber

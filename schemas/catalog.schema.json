@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/skoelle/piratefinder-catalog-json/schemas/catalog.schema.json",
+  "title": "PirateFinder catalogue JSON",
+  "type": "object",
+  "required": [
+    "schema", "generated_at", "converter", "source", "catalogue", "licence",
+    "unofficial", "platforms", "counts", "sources", "series", "crews", "disks",
+    "contents", "images", "media", "trivia", "links"
+  ],
+  "properties": {
+    "schema": {"type": "integer", "const": 1},
+    "generated_at": {"type": "string"},
+    "converter": {"type": "object"},
+    "source": {"type": "object"},
+    "catalogue": {"type": "object"},
+    "licence": {"type": "object"},
+    "unofficial": {"type": "boolean"},
+    "platforms": {"type": "array", "items": {"type": "string"}},
+    "counts": {"type": "object"},
+    "sources": {"type": "array"},
+    "series": {"type": "array"},
+    "crews": {"type": "array"},
+    "disks": {"type": "array"},
+    "contents": {"type": "array"},
+    "images": {"type": "array"},
+    "media": {"type": "array"},
+    "trivia": {"type": "array"},
+    "links": {"type": "array"}
+  }
+}
