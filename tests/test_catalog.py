@@ -15,6 +15,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from converter import piratefinder_catalog as pc
+from converter import release_notes
 
 SCHEMA = """
 CREATE TABLE meta (key TEXT PRIMARY KEY, value TEXT NOT NULL);
@@ -194,6 +195,33 @@ class HelperTests(unittest.TestCase):
             digest = pc.write_sha256(path)
             self.assertEqual(len(digest), 64)
             self.assertTrue(path.with_name(path.name + ".sha256").is_file())
+
+
+class ReleaseNotesTests(unittest.TestCase):
+    def test_renders_date_source_and_assets(self) -> None:
+        payload = {
+            "generated_at": "2026-10-24T12:34:16Z",
+            "converter": {"name": "piratefinder-catalog-json", "version": "0.1.0"},
+            "source": {"tag": "catalogue-2026-10-19"},
+            "assets": {
+                "all": {
+                    "file": "piratefinder-catalog-all.json.gz",
+                    "size": 1234,
+                    "counts": {"disks": 10, "media": 20, "trivia": 30},
+                },
+                "atari-st": {
+                    "file": "piratefinder-catalog-atari-st.json.gz",
+                    "size": 567,
+                    "counts": {"disks": 4, "media": 5, "trivia": 6},
+                },
+            },
+        }
+        text = release_notes.render(payload)
+        self.assertIn("catalogue-2026-10-19", text)
+        self.assertIn("2026-10-24T12:34:16Z", text)
+        self.assertIn("piratefinder-catalog-all.json.gz", text)
+        self.assertIn("piratefinder-catalog-atari-st.json.gz", text)
+        self.assertIn("CC BY-NC-SA 4.0", text)
 
 
 if __name__ == "__main__":

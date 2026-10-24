@@ -2,7 +2,9 @@ name: Build catalogue JSON
 
 on:
   schedule:
-    - cron: "0 6 * * 1"
+    # PirateFinder builds its catalogue on Monday 04:17 UTC. Run one day later
+    # so the newest release is normally available.
+    - cron: "17 6 * * 2"
   workflow_dispatch:
     inputs:
       tag:
@@ -63,3 +65,14 @@ jobs:
               --notes "Automatically generated from the newest PirateFinder catalogue release. Data: CC BY-NC-SA 4.0 (see LICENSE-DATA and NOTICE)."
           fi
           gh release upload "$tag" dist/* --clobber
+
+      - name: Update release notes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          python -m converter.release_notes dist/latest.json > "$RUNNER_TEMP/release-notes.md"
+          gh release edit catalog-latest \
+            --title "Catalogue JSON (latest)" \
+            --notes-file "$RUNNER_TEMP/release-notes.md" \
+            --prerelease

@@ -119,19 +119,27 @@ catalogue metadata stay complete.
 
 ## Release assets (CI)
 
-`.github/workflows/catalog.yml` runs weekly and on demand:
+`.github/workflows/catalog.yml` runs weekly and on demand. The schedule is
+Tuesday 06:17 UTC, one day after PirateFinder's Monday 04:17 UTC catalogue
+build:
 
 1. runs the unit tests,
-2. `./run.sh update` (all + Atari ST, gzip + SHA-256),
+2. `./run.sh update` (all + Atari ST + Amiga, gzip + SHA-256),
 3. uploads `dist/*` to the fixed prerelease tag `catalog-latest`:
    - `piratefinder-catalog-all.json.gz` (+ `.sha256`)
    - `piratefinder-catalog-atari-st.json.gz` (+ `.sha256`)
    - `piratefinder-catalog-amiga.json.gz` (+ `.sha256`)
-   - `latest.json` (source tag, sizes, SHA-256, counts, licence)
+   - `latest.json` (source tag, `generated_at`, sizes, SHA-256, counts, licence)
    - `LICENSE-DATA`, `NOTICE`
 
+The release name/tag stays `Catalogue JSON (latest)` / `catalog-latest`; only
+its assets and notes are replaced. The notes show the current catalogue tag,
+generation date and per-asset counts.
+
 Consumers should read `latest.json`, verify the asset's SHA-256, then use the
-JSON. The raw SQLite database is never published.
+JSON. The raw SQLite database is never published. `published_at` stays the
+first creation time; use `latest.json` → `generated_at` / `source.tag` (and the
+asset SHA-256) to detect a newer dataset.
 
 ## Licence
 
